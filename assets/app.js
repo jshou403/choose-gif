@@ -1,28 +1,95 @@
-var topics = ["Toy Story", "The Simpsons", "Rilakkuma", "Aladdin", "Big Mouth",]
+var topics = ["Toy Story", "The Simpsons", "Rilakkuma", "Aladdin", "Big Mouth", "Family Guy", "Land Before Time", "Cinderella", "Mulan", "Trolls"]
 
-// Function for displaying movie data
+function displayGif() {
+
+    var title = $(this).attr("data-name");
+    var queryURL = "https://api.giphy.com/v1/gifs/search?q=" + title + "&limit=10&rating=PG13&apikey=QWPefb4T4UfHSWwLEDxMZmKFzKnHDbhS";
+
+    console.log("Data-name = " + title);
+
+    // Creating an AJAX call for the specific movie button being clicked
+    $.ajax({
+        url: queryURL,
+        method: "GET"
+
+    }).then(function (response) {
+
+        // var results = response.data;
+        console.log(response.data);
+
+        // New div to hold gif + rating
+        var gifHolder = $("<div>")
+
+        // Add image to new div
+        var imgURL = response.data[1].images.fixed_height_still.url;
+        console.log("imgURL: " + imgURL);
+        gifHolder.append("<img src=\"" + imgURL + "\">");
+
+        // New p tag to hold rating
+        var pRating = $("<p>")
+
+        // Add rating to new div
+        var rating = response.data[1].rating;
+
+        pRating.append("Rated : " + rating);
+        gifHolder.append(pRating);
+
+        // Prepend new div to gif-display
+        $("#gif-display").prepend(gifHolder);
+
+
+
+
+
+        // var results = response.data;
+
+        // for (var i = 0; i < results.length; i++) {
+        //     // create a new div
+        //     var gifDiv = $("<div>");
+
+        //     // create a variable to hold the rating that's grabbed
+        //     var gifRating = results[i].rating;
+        //     // create a p tag to hold the rating text and rating grabbed
+        //     var p = $("<p>").text("Rating: " + rating);
+
+        //     // create an image tag to place the image url
+        //     var gifImage = $("<img>");
+        //     // add src attribute with the URL 
+        //     gifImage.attr("src", results[i].images.fixed_height.url);
+
+        //     $("#gif-display").prepend(gifDiv);
+
+        //     // Retrieving the URL for the image
+        //     var imgURL = response.data[1].images.fixed_height_still.url;
+        //     console.log(imgURL);
+        //     $("#gif-display").append("<img src=\"" + imgURL + "\">");
+
+        // }
+
+    });
+}
+
+// FUNCTION TO GENERATE BUTTONS
 function generateButtons() {
 
     $("#button-display").empty();
 
     // Looping through the array of movies
     for (var i = 0; i < topics.length; i++) {
-
         var newbutton = $("<button>");
-        newbutton.addClass("movie btn btn-warning m-1");
-
-        // Adding a data-attribute with a value of the movie at index i
+        newbutton.addClass("animation-name btn btn-warning m-1");
+        // Adding a data-attribute with a value of the topic at index i
         newbutton.attr("data-name", topics[i]);
-
-        // Providing the button's text with a value of the movie at index i
+        // Providing the button's text with a value of the topic at index i
         newbutton.text(topics[i]);
-        
         // Adding the button to the HTML
         $("#button-display").append(newbutton);
     }
 }
 
-// This function handles events where one button is clicked
+// WHEN SEARCH BUTTON IS CLICKED: 
+// 1) TAKE VALUE FROM USER-INPUT AND PUSH TO ARRAY,
+// 2) THEN RUN FUNCTION TO GENERATE BUTTON
 $("#search-button").on("click", function (event) {
     // event.preventDefault() prevents the form from trying to submit itself.
     // We're using a form so that the user can hit enter instead of clicking the button if they want
@@ -37,46 +104,7 @@ $("#search-button").on("click", function (event) {
     generateButtons();
 });
 
-// Calling the renderButtons function at least once to display the initial list of movies
+// CALL FUNCTION TO GENERATE BUTTON FUCTION TO DISPLAY INITIAL LIST OF MOVIES
 generateButtons();
 
-// // // // // // // // 
-
-$.ajax({
-    url: queryURL,
-    method: "GET"
-}).then(function (response) {
-    console.log(response);
-    $("div").append(response.data[1]);
-});
-
-
-// This .on("click") function will trigger the AJAX Call
-// $("#find-movie").on("click", function (event) {
-
-//     // Preventing the submit button from trying to submit the form
-//     // We're optionally using a form so the user may hit Enter to search instead of clicking the button
-//     event.preventDefault();
-
-//     // Here we grab the text from the input box
-//     var movie = $("#movie-input").val();
-
-//     // Here we construct our URL
-//     var queryURL = "https://www.omdbapi.com/?t=" + movie + "&apikey=trilogy";
-
-//     // Write code between the dashes below to hit the queryURL with $ajax, then take the response data
-//     // and display it in the div with an id of movie-view
-
-//     // YOUR CODE GOES IN THESE DASHES. DO NOT MANUALLY EDIT THE HTML ABOVE
-
-//     // =================================================================
-
-//     $.ajax({
-//         url: queryURL,
-//         method: "GET"
-//     }).then(function (response) {
-//         $("#movie-view").append(JSON.stringify(response));
-//     });
-
-//     // =================================================================
-// });
+$(document).on("click", ".animation-name", displayGif);
