@@ -1,11 +1,17 @@
 var topics = ["Toy Story", "The Simpsons", "Rilakkuma", "Aladdin", "Big Mouth", "Family Guy", "Land Before Time", "Cinderella", "Mulan", "Trolls"]
 
+// FUNCTION TO DISPLAY GIFS
 function displayGif() {
 
     var title = $(this).attr("data-name");
     var queryURL = "https://api.giphy.com/v1/gifs/search?q=" + title + "&limit=10&rating=PG13&apikey=QWPefb4T4UfHSWwLEDxMZmKFzKnHDbhS";
 
     console.log("Data-name = " + title);
+
+    // TRYING TO CREATE A DIV FOR EACH SET OF GIFS TO POPULATE
+    var gifGrouping = $("<div>");
+    gifGrouping.addClass("border border-2 border-warning mb-3");
+    $("#gif-display").prepend(gifGrouping);
 
     // Creating an AJAX call for the specific movie button being clicked
     $.ajax({
@@ -14,59 +20,37 @@ function displayGif() {
 
     }).then(function (response) {
 
-        // var results = response.data;
-        console.log(response.data);
+        var results = response.data;
+        console.log(results);
 
-        // New div to hold gif + rating
-        var gifHolder = $("<div>")
+        for (var i = 0; i < results.length; i++) {
 
-        // Add image to new div
-        var imgURL = response.data[1].images.fixed_height_still.url;
-        console.log("imgURL: " + imgURL);
-        gifHolder.append("<img src=\"" + imgURL + "\">");
+            // New div to hold gif + rating
+            var gifHolder = $("<div>");
+            // gifHolder.addClass("border border-warning border-2");
 
-        // New p tag to hold rating
-        var pRating = $("<p>")
+            // Add image to new div
+            var imgURL = results[i].images.fixed_height_still.url;
+            gifHolder.append("<img src=\"" + imgURL + "\">");
 
-        // Add rating to new div
-        var rating = response.data[1].rating;
+            // New p tag to hold rating
+            var pRating = $("<p>")
+            // Add rating to new div
+            var rating = results[i].rating;
+            pRating.append("Rated : " + rating);
+            gifHolder.append(pRating);
 
-        pRating.append("Rated : " + rating);
-        gifHolder.append(pRating);
+            // test&debug
+            console.log("Still Image URL: " + imgURL);
+            console.log("Rating: " + rating);
 
-        // Prepend new div to gif-display
-        $("#gif-display").prepend(gifHolder);
+            // Prepend new div to gif-display
+            $(gifGrouping).prepend(gifHolder);
 
-
-
-
-
-        // var results = response.data;
-
-        // for (var i = 0; i < results.length; i++) {
-        //     // create a new div
-        //     var gifDiv = $("<div>");
-
-        //     // create a variable to hold the rating that's grabbed
-        //     var gifRating = results[i].rating;
-        //     // create a p tag to hold the rating text and rating grabbed
-        //     var p = $("<p>").text("Rating: " + rating);
-
-        //     // create an image tag to place the image url
-        //     var gifImage = $("<img>");
-        //     // add src attribute with the URL 
-        //     gifImage.attr("src", results[i].images.fixed_height.url);
-
-        //     $("#gif-display").prepend(gifDiv);
-
-        //     // Retrieving the URL for the image
-        //     var imgURL = response.data[1].images.fixed_height_still.url;
-        //     console.log(imgURL);
-        //     $("#gif-display").append("<img src=\"" + imgURL + "\">");
-
-        // }
+        }
 
     });
+    
 }
 
 // FUNCTION TO GENERATE BUTTONS
@@ -107,4 +91,6 @@ $("#search-button").on("click", function (event) {
 // CALL FUNCTION TO GENERATE BUTTON FUCTION TO DISPLAY INITIAL LIST OF MOVIES
 generateButtons();
 
+// WHEN BUTTON class=animation-name IS CLICKED: 
+// 1) RUN FUNCTION TO DISPLAY GIF
 $(document).on("click", ".animation-name", displayGif);
