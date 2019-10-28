@@ -10,8 +10,8 @@ function displayGif() {
 
     // CREATED DIV FOR EACH SET OF 10 GIFS TO POPULATE
     var gifGrouping = $("<div>");
-    gifGrouping.addClass("border border-2 border-warning mb-3");
     $("#gif-display").prepend(gifGrouping);
+    gifGrouping.addClass("border border-2 border-warning mb-3");
 
     // AJAX call for when generated button is clicked
     $.ajax({
@@ -27,6 +27,7 @@ function displayGif() {
 
             // New div to hold gif + rating
             var gifHolder = $("<div>");
+            gifHolder.addClass("mr-3 p-2 d-inline-block");
 
             // Assign gif URLs to variables
             var imgURL = results[i].images.fixed_height_still.url;
