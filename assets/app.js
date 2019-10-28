@@ -6,14 +6,14 @@ function displayGif() {
     var title = $(this).attr("data-name");
     var queryURL = "https://api.giphy.com/v1/gifs/search?q=" + title + "&limit=10&rating=PG13&apikey=QWPefb4T4UfHSWwLEDxMZmKFzKnHDbhS";
 
-    console.log("Data-name = " + title);
+    console.log("Title: " + title);
 
-    // TRYING TO CREATE A DIV FOR EACH SET OF GIFS TO POPULATE
+    // CREATED DIV FOR EACH SET OF 10 GIFS TO POPULATE
     var gifGrouping = $("<div>");
     gifGrouping.addClass("border border-2 border-warning mb-3");
     $("#gif-display").prepend(gifGrouping);
 
-    // Creating an AJAX call for the specific movie button being clicked
+    // AJAX call for when generated button is clicked
     $.ajax({
         url: queryURL,
         method: "GET"
@@ -21,14 +21,14 @@ function displayGif() {
     }).then(function (response) {
 
         var results = response.data;
-        console.log(results);
+        console.log("Results: " + results);
 
         for (var i = 0; i < results.length; i++) {
 
             // New div to hold gif + rating
             var gifHolder = $("<div>");
 
-            // Assign gif URLs to variable
+            // Assign gif URLs to variables
             var imgURL = results[i].images.fixed_height_still.url;
             var imgURLanimated = results[i].images.fixed_height.url;
 
@@ -36,13 +36,14 @@ function displayGif() {
             var gifImage = $("<img>");
             gifImage.attr("src", imgURL);
             gifImage.attr("class", "thegif");
+            // Add "data" attributes
             gifImage.attr("data-still", imgURL);
             gifImage.attr("data-animate", imgURLanimated);
             gifImage.attr("data-state", "still");
             gifHolder.append(gifImage);
 
             // New p tag to hold rating
-            var pRating = $("<p>")
+            var pRating = $("<p>");
 
             // Add rating to new div
             var rating = results[i].rating;
@@ -68,7 +69,6 @@ $(document).on("click", ".thegif", animateGif);
 
 // FUNCTION TO ANIMATE GIFS
 function animateGif() {
-    // The attr jQuery method allows us to get or set the value of any attribute on our HTML element
 
     var state = $(this).attr("data-state");
     console.log("State: " + state);
@@ -87,15 +87,11 @@ function generateButtons() {
 
     $("#button-display").empty();
 
-    // Looping through the array of movies
     for (var i = 0; i < topics.length; i++) {
         var newbutton = $("<button>");
         newbutton.addClass("animation-name btn btn-warning m-1");
-        // Adding a data-attribute with a value of the topic at index i
         newbutton.attr("data-name", topics[i]);
-        // Providing the button's text with a value of the topic at index i
         newbutton.text(topics[i]);
-        // Adding the button to the HTML
         $("#button-display").append(newbutton);
     }
 }
@@ -104,8 +100,8 @@ function generateButtons() {
 // 1) TAKE VALUE FROM USER-INPUT AND PUSH TO ARRAY,
 // 2) THEN RUN FUNCTION TO GENERATE BUTTON
 $("#search-button").on("click", function (event) {
+
     // event.preventDefault() prevents the form from trying to submit itself.
-    // We're using a form so that the user can hit enter instead of clicking the button if they want
     event.preventDefault();
 
     // This line will grab the text from the input box
@@ -121,5 +117,5 @@ $("#search-button").on("click", function (event) {
 generateButtons();
 
 // WHEN BUTTON class=animation-name IS CLICKED: 
-// 1) RUN FUNCTION TO DISPLAY GIF
+//      RUN FUNCTION TO DISPLAY GIF
 $(document).on("click", ".animation-name", displayGif);
